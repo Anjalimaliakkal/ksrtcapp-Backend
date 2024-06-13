@@ -2,38 +2,39 @@ const express = require("express")
 const mongoose = require("mongoose")
 const cors = require("cors")
 const bcrypt = require("bcryptjs")
-const { blogsmodel } = require("./models/blog")
+const { ksrtcsmodel } = require("./models/ksrtc")
 const jwt = require("jsonwebtoken")
 const app = express()
 app.use(cors())
 app.use(express.json())
 
-mongoose.connect("mongodb+srv://anjali2003:anjali2003@cluster0.wy6js.ksrtcdb.net/ksrtcdb?retryWrites=true&w=majority&appName=Cluster0")
+mongoose.connect("mongodb+srv://anjali2003:anjali2003@cluster0.wy6js.mongodb.net/ksrtcdb?retryWrites=true&w=majority&appName=Cluster0")
+
 const generateHashedPassword = async (password) => {
     const salt = await bcrypt.genSalt(10)
     return bcrypt.hash(password, salt)
 }
-
 app.post("/signUp", async (req, res) => {
+
     let input = req.body
     let hashedpassword = await generateHashedPassword(input.password)
     console.log(hashedpassword)
     input.password = hashedpassword
-    let kstrc = new ksrtcsmodel(input)
-    kstrc.save()
+    let ksrtc = new ksrtcsmodel(input)
+    ksrtc.save()
     res.json({ "status": "success" })
 })
 
 app.post("/signIn", (req, res) => {
     let input = req.body
-    kstrcsmodel.find({ "emailid": req.body.emailid }).then(
+    ksrtcsmodel.find({ "emailid": req.body.emailid }).then(
         (response) => {
             if (response.length > 0) {
                 let dbPassword = response[0].password
                 console.log(dbPassword)
                 bcrypt.compare(input.password, dbPassword, (error, isMatch) => {
                     if (isMatch) {
-                        jwt.sign({ email: input.emailid }, "blog-app", { expiresIn: "1d" }, (error, token) => {
+                        jwt.sign({ email: input.emailid }, "ksrtc-app", { expiresIn: "1d" }, (error, token) => {
                             if (error) {
                                 res.json({ "status": "unable to create token" })
                             } else {
@@ -59,7 +60,7 @@ app.post("/viewusers", (req, res) => {
             res.json({ "status": "unauthorized access" })
         } else {
             if (decoded) {
-                blogsmodel.find().then(
+                ksrtcsmodel.find().then(
                     (response) => {
                         res.json(response)
                     }
