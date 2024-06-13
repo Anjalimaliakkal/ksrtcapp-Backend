@@ -79,6 +79,43 @@ app.post("/AddBus", (req, res) => {
     res.json({ "status": "success" })
 })
 
+app.post("/search", (req, res) => {
+    let input = req.body
+    ksrtcsmodel.find(input).then(
+        (data) => {
+            res.json(data)
+        }
+    ).catch(
+        (error) => {
+            res.json(error)
+        }
+    )
+})
+
+app.post("/delete", (req, res) => {
+    let input = req.body
+    ksrtcsmodel.findByIdAndDelete(input._id).then(
+        (response) => {
+            console.log("DELETE")
+            res.json({ "status": "success" })
+        }
+    ).catch(
+        (error)=> {
+        res.json({"status": "error"})
+    }
+)
+})
+
+app.get("/ViewAll", (req, res) => {
+    ksrtcsmodel.find().then(
+        (data) => {
+            res.json(data)
+        }
+    ).catch((error) => {
+        res.json(error)
+    })
+})
+
 app.listen(8081, () => {
     console.log("server started")
 })
