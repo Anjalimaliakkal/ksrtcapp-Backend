@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const cors = require("cors")
 const bcrypt = require("bcrypt")
 const { ksrtcsmodel } = require("./models/ksrtc")
+const { driversmodel } = require("./models/drivers")
 const jwt = require("jsonwebtoken")
 const app = express()
 app.use(cors())
@@ -74,14 +75,14 @@ app.post("/viewusers", (req, res) => {
 app.post("/AddBus", (req, res) => {
     let input = req.body
     console.log(input)
-    let ksrtc = new ksrtcsmodels(input)
-    ksrtc.save()
+    let driver = new driversmodel(input)
+    driver.save()
     res.json({ "status": "success" })
 })
 
 app.post("/search", (req, res) => {
     let input = req.body
-    ksrtcsmodel.find(input).then(
+    driversmodel.find(input).then(
         (data) => {
             res.json(data)
         }
@@ -94,7 +95,7 @@ app.post("/search", (req, res) => {
 
 app.post("/delete", (req, res) => {
     let input = req.body
-    ksrtcsmodel.findByIdAndDelete(input._id).then(
+    driversmodel.findByIdAndDelete(input._id).then(
         (response) => {
             console.log("DELETE")
             res.json({ "status": "success" })
@@ -107,7 +108,7 @@ app.post("/delete", (req, res) => {
 })
 
 app.get("/ViewAll", (req, res) => {
-    ksrtcsmodel.find().then(
+    driversmodel.find().then(
         (data) => {
             res.json(data)
         }
